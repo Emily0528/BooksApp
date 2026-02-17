@@ -1,5 +1,6 @@
 
 const favoriteBooks = [];
+const filters = [];
 
 function initActions() {
      
@@ -23,7 +24,32 @@ function initActions() {
     }
 
     console.log('Favorite books:', favoriteBooks);
-    });
+  });
+
+  const filtersForm = document.querySelector('.filters');
+
+  filtersForm.addEventListener('click', function(event) {
+
+    const clickedElement = event.target;
+
+    if (
+      clickedElement.tagName === 'INPUT' &&
+      clickedElement.type === 'checkbox' &&
+      clickedElement.name === 'filter'
+    ) {
+      if (clickedElement.checked) {
+        filters.push(clickedElement.value);
+      } else {
+        const index = filters.indexOf(clickedElement.value);
+        filters.splice(index, 1);
+      }
+
+      console.log(filters);
+      filterBooks();
+
+    }
+
+  });
 }
 
 
@@ -41,3 +67,32 @@ function renderBooks() {
 }
 
 renderBooks();
+
+function filterBooks() {
+
+  for (const book of dataSource.books) {
+
+    let shouldBeHidden = false;
+
+    for (const filter of filters) {
+
+      if (!book.details[filter]) {
+        shouldBeHidden = true;
+        break;
+      }
+
+    }
+
+    const bookImage = document.querySelector(
+      `.book__image[data-id="${book.id}"]`
+    );
+
+    if (shouldBeHidden) {
+      bookImage.classList.add('hidden');
+    } else {
+      bookImage.classList.remove('hidden');
+    }
+
+  }
+
+}
